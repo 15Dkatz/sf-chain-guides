@@ -23,3 +23,5 @@ Some of the main course highlights:
 - Include transactions in core blocks of the chain.
 
 We’ll use NodeJS to implement this project. Don’t worry if you’re not familiar with JavaScript. This course explains the purpose behind every line and keyword. So, while JS experience will help, it’s not an absolute requirement.
+
+Ultimately, knowledge of the Blockchain will set you up for success in the future, as an engineer in a blockchain-dominated world. So what are you waiting for? Let’s get started building a blockchain!
