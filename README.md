@@ -1,5 +1,7 @@
 ### The official accompanying repository for the *"Build a Blockchain and Cryptocurrency"* course by David Katz on Udemy.
 
+Check out the course: [https://www.udemy.com/build-blockchain](https://www.udemy.com/build-blockchain)
+
 The description from that course:
 The blockchain is a revolutionary technology that allows for the secure, distributed, decentralized storage of information. Over the past few years, the blockchain has taken the engineering landscape by storm. Many people in the industry predict that the blockchain will disrupt the ways we interact with technology on the same way the Internet did in the early 2000s.
 
