@@ -1,0 +1,34 @@
+To extend this blockchain with a cryptocurrency, we’ll need wallet objects. Wallets will store the balance of an individual, and approve transactions (exchanges of currency) by generating signatures.
+
+- Create wallet/
+- Create wallet/index.js
+
+In the default wallet/index.js file, create the Wallet class. Every wallet instance will have three fields. First is a balance, which is set to `INITIAL_BALANCE`. This will variable will be a value every wallet begins with. This helps get the economy flowing. Second, it has a `keyPair` object. The keyPair object will contain methods that can return the private key for the wallet, as well as its public key. Third and finally, it has a publicKey field. The public key also serves as the public address for the wallet, and is what other individuals in the network use to send currency to the wallet.
+```
+const { INITIAL_BALANCE } = require('../config');
+
+class Wallet {
+  constructor() {
+    this.balance = INITIAL_BALANCE;
+    this.keyPair = null;
+    this.publicKey = null;
+  }
+
+  toString() {
+    return `Wallet -
+    publicKey : ${this.publicKey.toString()}
+    balance   : ${this.balance}`
+  }
+}
+
+module.exports = Wallet;
+```
+
+Right now, the balance of each wallet has been set to a global variable that doesn’t exist yet. So in config.js, declare the INITIAL_BALANCE, and set it to 500:
+```
+...
+const INITIAL_BALANCE  = 500;
+
+module.exports = { DIFFICULTY, MINE_RATE, INITIAL_BALANCE };
+```
+

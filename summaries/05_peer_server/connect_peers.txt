@@ -1,0 +1,43 @@
+The same class that creates the original websocket server will be used to connect to existing servers.
+
+In p2p-server.js:
+```
+...
+  listen() {
+    const server = new Websocket.Server({ port: P2P_PORT });
+    server.on('connection', socket => this.connectSocket(socket));
+    this.connectToPeers();
+  }
+
+  connectToPeers() {
+    peers.forEach(peer => {
+      const socket = new Websocket(peer);
+      socket.on('open', () => this.connectSocket(socket));
+    });
+  }
+}
+
+module.exports = P2pServer;
+
+```
+Start a P2pServer instance. Head to app/index.js, and require the P2pServer module:
+```
+const P2pServer = require('./p2p-server');
+const p2pServer = new P2pServer(bc);
+… 
+// at the very bottom of the script
+p2pServer.listen();
+```
+
+In one command line tab:
+$  npm run dev
+In another command line tab:
+$ HTTP_PORT=3002 P2P_PORT=5002 PEERS=ws://localhost:5001 npm run dev
+
+Expect ‘socket connected’ to print in both tabs.
+
+In a third command line tab:
+$ HTTP_PORT=3003 P2P_PORT=5003 PEERS=ws://localhost:5001,ws://localhost:5002 npm run dev
+
+Expect ‘socket connected’ to be printed two times in each tab.
+

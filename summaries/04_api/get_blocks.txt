@@ -1,0 +1,28 @@
+Add the express module to create a Node API:
+
+$ npm i express --save
+
+Create a blockchain instance in the main app file. Then create a GET request to get the blockchain’s block. In app/index.js:
+```
+const express = require('express');
+const Blockchain = require('../blockchain');
+const HTTP_PORT = process.env.HTTP_PORT || 3001;
+
+const app = express();
+const bc = new Blockchain();
+
+app.get('/blocks', (req, res) => {
+	res.json(bc.chain);
+});
+
+app.listen(HTTP_PORT, () => console.log(`Listening on port: ${HTTP_PORT}`));
+```
+Now in package.json, add the `start` and `dev` scripts to the “scripts” section:
+```
+"start": "node ./app",
+"dev": "nodemon ./app"
+```
+$ npm run dev
+
+Now open the Postman application. Hit localhost:3001, and notice the response.
+If all goes well, you’ll find the array of blocks of the blockchain.

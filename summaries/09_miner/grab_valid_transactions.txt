@@ -1,0 +1,28 @@
+The first step to writing the mine function that we have in the Miner class is to add a validTransactions function for the TransactionPool. With this validTransactions function, return any transaction within the array of transactions that meets the following conditions. First, its total output amount matches the original balance specified in the input amount. Second, we’ll also verify the signature of every transaction to make sure that the data has not been corrupted after it was sent by the original sender.  Add a function called validTransactions to transaction-pool.js:
+
+```
+validTransactions() {
+  return this.transactions.filter(transaction => {
+    const outputTotal = transaction.outputs.reduce((total, output) => {
+      return total + output.amount;
+    }, 0);
+    
+    if (transaction.input.amount !== outputTotal) {
+      console.log(`Invalid transaction from ${transaction.input.address}.`);
+      return;
+    }
+
+    if (!Transaction.verifyTransaction(transaction)) {
+      console.log(`Invalid signature from ${transaction.input.address}.`)
+      return;
+    };
+    
+    return transaction;
+  });
+}
+```
+
+Note that there is a dependency though on the Transaction class. So import the Transaction class at the top of the file:
+```
+const Transaction = require('../wallet/transaction');
+```

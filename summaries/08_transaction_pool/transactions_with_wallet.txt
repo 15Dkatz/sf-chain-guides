@@ -1,0 +1,34 @@
+Create transactions with the Wallet class. Define a new method within the Wallet class called createTransaction with three parameters, a recipient, the amount for the transaction, and a transactionPool object. The function will assume an `existingTransaction` function exists for the transactionPool, to help replace existing transactions in the pool:
+
+In wallet/index.js:
+```
+createTransaction(recipient, amount, transactionPool) {
+  if (amount > this.balance) {
+    console.log(`Amount: ${amount}, exceeds current balance: ${this.balance}`);
+    return;
+  }
+
+  let transaction = transactionPool.existingTransaction(this.publicKey);
+  if (transaction) {
+    transaction.update(this, recipient, amount);
+  } else {
+    transaction = Transaction.newTransaction(this, recipient, amount);
+    transactionPool.updateOrAddTransaction(transaction);
+  }
+
+  return transaction;
+}
+```
+
+Make sure to import the Transaction class in wallet/index.js
+```
+const Transaction = require('./transaction');
+```
+
+Add the existingTransaction function to transaction-pool.js:
+```
+  existingTransaction(address) {
+    return this.transactions.find(transaction => transaction.input.address === address);
+  }
+```
+

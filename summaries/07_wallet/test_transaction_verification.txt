@@ -1,0 +1,13 @@
+Add some tests to ensure that the signature verification works properly. In transaction.test.js
+```
+  it('validates a valid transaction', () => {
+    expect(Transaction.verifyTransaction(transaction)).toBe(true);
+  });
+
+  it('invalidates a corrupt transaction', () => {
+    transaction.outputs[0].amount = 50000;
+    expect(Transaction.verifyTransaction(transaction)).toBe(false);
+  });
+```
+
+$ npm run test

@@ -1,0 +1,24 @@
+Add a POST request, for users to add blocks to the chain. First install the bodyParser middleware to handle incoming json in express:
+
+$ npm i body-parser --save
+
+In app/index.js:
+```
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+…
+app.post('/mine', (req, res) => {
+  const block = bc.addBlock(req.body.data);
+  console.log(`New block added: ${block.toString()}`);
+  res.redirect('/blocks');
+});
+```
+
+Re-open Postman. Open a tab for a new request. Make sure it’s a POST request. Select body → Raw → json/application. Write in the json to post.
+```
+{
+"data": "foo"
+}
+```
+Enter `localhost:3001/mine` for the endpoint. Send. See the newly posted block in the chain.
+

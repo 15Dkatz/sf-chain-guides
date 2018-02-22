@@ -1,0 +1,23 @@
+Test difficulty adjustment in `block.test.js`:
+```
+
+it('lowers the difficulty for slowly mined blocks', () => {
+  expect(Block.adjustDifficulty(block, block.timestamp+360000)).toEqual(block.difficulty-1);
+});
+
+it('raises the difficulty for quickly mined blocks', () => {
+  expect(Block.adjustDifficulty(block, block.timestamp+1)).toEqual(block.difficulty+1);
+});
+
+```
+Also update the test that previously depended on `DIFFICULTY`, since blocks have their own `difficulty` attribute:
+```
+it('generates a hash that matches the difficulty', () => {
+ 	expect(block.hash.substring(0, block.difficulty)).toEqual('0'.repeat(block.difficulty));
+});
+```
+Also delete this unnecessary line:
+```
+const { DIFFICULTY } = require('../config'); // ←  remove
+```
+

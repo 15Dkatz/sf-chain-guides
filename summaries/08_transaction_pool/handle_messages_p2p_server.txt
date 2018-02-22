@@ -1,0 +1,53 @@
+Update the messageHandler in the peer to peer server to handle different types of messages. In p2p-server.js:
+```
+  messageHandler(socket) {
+    socket.on('message', message => {
+      const data = JSON.parse(message);
+      switch(data.type) {
+        case MESSAGE_TYPES.chain:
+          this.blockchain.replaceChain(data.chain);
+          break;
+        case MESSAGE_TYPES.transaction:
+          this.transactionPool.updateOrAddTransaction(data.transaction);
+          break;
+      }
+    …
+  }
+```
+
+Now in app/index.js, use the broadcastTransaction function in the ‘/transact’ endpoint. That way, transactions are broadcasted to the network whenever new ones are made:
+```
+p2pServer.broadcastTransaction(transaction);
+```
+
+Now start up a couple instances to test the new endpoint:
+$ npm run dev
+Second command line tab:
+$ HTTP_PORT=3002 P2P_PORT=5002 PEERS=ws://localhost:5001 npm run dev
+
+Then post transactions. Hit localhost:3001/transact. Select POST for the type of request, and make sure the type of data is Raw, application/json. Then have a json body that consists of an arbitrary recipient, and a value around 50:
+```
+{
+	"recipient": "foo-4dr3ss",
+	"amount": 50
+}
+```
+
+With those inputs loaded in, go ahead and click `Send` a couple times.
+
+Hit the transactions endpoint on both instances:
+- localhost:3001/transactions
+- localhost:3002/transactions
+
+Make a second POST transaction, this time with the second instance, http://localhost:3002/transact:
+```
+{
+	"recipient": "bar-4dr3ss",
+	"amount": 40
+}
+```
+
+Hit the transactions endpoint on both instances:
+- localhost:3001/transactions
+- localhost:3002/transactions
+

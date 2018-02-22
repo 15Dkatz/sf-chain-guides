@@ -1,0 +1,35 @@
+Test the validTransactions function with transaction-pool.test.js. There is actually a feature that can shorten down on the number of lines. Recall that there is a function within the wallet class create a transaction based on a given address, amount, and transaction pool. The createTransaction also does the job of adding the created transaction to the pool. This is what is already done manually by creating the transaction and adding it to the pool. So we can reduce this with one call to wallet.createTransaction, and the same random address, amount, and tp transaction pool instance:
+```
+   // remove → transaction = Transaction.newTransaction(wallet, 'r4nd-4dr355', 30);
+   // remove → tp.updateOrAddTransaction(transaction);
+   transaction = wallet.createTransaction('r4nd-4dr355', 30, bc, tp);
+```
+
+To begin testing the validTransactions functionality, create a situation where there is a mix of valid and corrupt transactions. Capture the scenario with a new describe block:
+```
+describe('mixing valid and corrupt transactions', () => {
+  let validTransactions;
+  beforeEach(() => {
+    validTransactions = [...tp.transactions];
+    for (let i=0; i<6; i++) {
+      wallet = new Wallet();
+      transaction = wallet.createTransaction('r4nd-4dr355', 30, bc, tp);
+      if (i%2==0) {
+        transaction.input.amount = 9999;
+      } else {
+        validTransactions.push(transaction);
+      }
+    }
+  });
+
+  it('shows a difference between valid and corrupt transactions', () => {
+    expect(JSON.stringify(tp.transactions)).not.toEqual(JSON.stringify(validTransactions));
+  });
+
+  it('grabs valid transactions', () => {
+    expect(tp.validTransactions()).toEqual(validTransactions);
+  });
+});
+```
+
+$ npm run test

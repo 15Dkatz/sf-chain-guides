@@ -1,0 +1,18 @@
+To handle the addition of new output objects to an existing transaction, define a function in the Transaction class called update. In transaction.js:
+```
+update(senderWallet, recipient, amount) {
+	const senderOutput = this.outputs.find(output => output.address === senderWallet.publicKey);
+
+  if (amount > senderOutput.amount) {
+    console.log(`Amount: ${amount} exceeds balance.`);
+    return;
+  }
+
+  senderOutput.amount = senderOutput.amount - amount;
+  this.outputs.push({ amount, address: recipient });
+  Transaction.signTransaction(this, senderWallet);
+
+  return this;
+}
+```
+

@@ -1,0 +1,37 @@
+To create the keyPair and publicKey objects  objects, use a module called ‘elliptic’. Elliptic is a module in node that contains classes and methods that enable elliptic-curve based cryptography. Elliptic cryptography is an advanced mathematical subject, but essentially, it centers around the idea in that it is computationally infeasible and impossibly expensive to guess the answer to a randomly generated elliptic curve. Install elliptic as a dependency on the command line:
+
+$ npm i elliptic --save
+
+With the elliptic module installed, create a new file at the root of the project called chain-util.js. 
+- Create chain-util.js
+
+Within chain-util.js, create a ChainUtil class. The class will collect helper methods that expose common functions that wrap around functions from elliptic. A few classes in the project will use these functions. Also create an EC instance:
+```
+const EC = require('elliptic').ec;
+const ec = new EC('secp256k1');
+
+class ChainUtil {}
+
+module.exports = ChainUtil;
+```
+
+Side note: in case you’re wondering, sec stands for standards of efficient cryptography. The p stands for prime, and 256 for 256 bits. In the elliptic-based algorithm itself, a key component is a prime number to generate the curve, and this prime number will be 256 bits, or 32 bytes/characters. K stands for Koblitz which is the name of a notable mathematician in the field of cryptography. And 1 stands for this being the first implementation of the curve algorithm in this standard.
+
+Add a new static genKeyPair method to this ChainUtil class, that returns a call to the identically-named genKeyPair method of the ec instance:
+```
+class ChainUtil {
+  static genKeyPair() {
+    return ec.genKeyPair();
+  }
+}
+```
+
+Now within the wallet/index.js class, require the ChainUtil class. Use the `static genKeyPair` method to create a `keyPair` object within the constructor of the wallet. And then use this `keyPair` object to set the `publicKey`:
+```
+const ChainUtil = require('../chain-util');
+
+…
+	this.keyPair = ChainUtil.genKeyPair();
+  this.publicKey = this.keyPair.getPublic();
+```
+

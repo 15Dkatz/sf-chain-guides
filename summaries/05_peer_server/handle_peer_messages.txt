@@ -1,0 +1,30 @@
+Allow the sockets to send messages to each other. In the `P2pServer` class:
+```
+messageHandler(socket) {
+	socket.on('message', message => {
+    const data = JSON.parse(message);
+    console.log('data', data);
+  });
+});
+```
+In `this.connectSocket`:
+```
+connectSocket(socket) {
+  this.sockets.push(socket);
+  console.log('Socket connected');
+  this.messageHandler(socket);
+  socket.send(JSON.stringify(this.blockchain.chain));
+}
+```
+Kill all the running instances on the command line. Fire up one instance with
+$ npm run dev
+
+Grow this blockchain a little. Open Postman, and fire two post requests to the mine endpoint. The endpoint is `localhost:3001/mine`, and the Raw→ Body → Type → application/json:
+```{ “data”: “foo” }```
+Send. Send.
+
+Run a second instance in a second command line tab:
+$ HTTP_PORT=3002 P2P_PORT=5002 PEERS=ws://localhost:5001 npm run dev
+
+Observe the received message - the blockchain of the original instance.
+

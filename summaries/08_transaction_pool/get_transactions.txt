@@ -1,0 +1,20 @@
+By giving each of users their own wallet, users of the application will have the ability to conduct transactions with each other, thus putting the cryptocurrency into action. Start in the index file of the app directory, where holds the main code for the interactive application:
+ - Go to app/index.js
+```
+...
+const Wallet = require('../wallet');
+const TransactionPool = require('../wallet/transaction-pool');
+
+...
+const wallet = new Wallet();
+const tp = new TransactionPool();
+
+...
+app.get('/transactions', (req, res) => {
+  res.json(tp.transactions);
+});
+```
+
+$ npm run dev
+- hit localhost:3001/transactions
+

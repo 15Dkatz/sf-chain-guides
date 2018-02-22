@@ -1,0 +1,53 @@
+The proof-of-work system will deter dishonest contributors to the blockchain by requiring them to do computational work. In block.js, declare a DIFFICULTY constant - the “difficulty” of the system for mining blocks:
+```
+// After the imports
+const DIFFICULTY = 4;
+```
+Update the constructor:
+```
+constructor(timestamp, lastHash, hash, data, nonce) {
+	…
+	this.nonce = nonce;
+}
+```
+Update the hash functions:
+```
+static hash(timestamp, lastHash, data, nonce) {
+	return SHA256(`${timestamp}${lastHash}${data}${nonce}`).toString();
+}
+
+static blockHash(block) {
+  const { timestamp, lastHash, data, nonce } = block;
+  return Block.hash(timestamp, lastHash, data, nonce);
+}
+```
+Include the nonce in `toString()`:
+```	
+...
+	Nonce   : ${this.nonce}
+	Data	  : ${this.data}
+```
+Include a default nonce for the `genesis` block:
+```
+static genesis() {
+  return new this('Genesis time', '-----', 'f1r57-h45h', [], 0);
+}
+```
+
+Update the `static mineBlock` function to use the proof-of-work system:
+```
+static mineBlock(lastBlock, data) {
+	const lastHash = lastBlock.hash;
+	let hash, timestamp;
+	let nonce = 0;
+
+	do {
+    nonce++;
+    timestamp = Date.now();
+    hash = Blockhash = Block.hash(timestamp, lastHash, data, nonce);
+  } while (hash.substring(0, DIFFICULTY) !== '0'.repeat(DIFFICULTY));
+
+  return new this(timestamp, lastHash, hash, data, nonce);
+}
+```
+

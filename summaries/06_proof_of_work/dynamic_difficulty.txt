@@ -1,0 +1,55 @@
+Create a system that automatically adjusts the difficulty as more miners are added to the blockchain. In config.js, create a `MINE_RATE` constant to represent the millisecond rate that blocks should be mined:
+```
+...
+const MINE_RATE = 3000;
+module.exports = { DIFFICULTY, MINE_RATE };
+```
+Add difficulty attributes to each block in the chain. In the `Block` class of `block.test.js`:
+```
+constructor(timestamp, lastHash, hash, data, nonce, difficulty) {
+  …
+  this.difficulty = difficulty || DIFFICULTY;
+}
+...
+static hash(timestamp, lastHash, data, nonce, difficulty) {
+  return SHA256(`${timestamp}${lastHash}${data}${nonce}${difficulty}`).toString();
+}
+
+static blockHash(block) {
+  const { timestamp, lastHash, data, nonce, difficulty } = block;
+  return Block.hash(timestamp, lastHash, data, nonce, difficulty);
+}
+
+// Update `toString()`
+Difficulty: ${this.difficulty}
+
+`` Update `static genesis()`
+return new this('Genesis time', '-----', 'f1r57-h45h', [], 0, DIFFICULTY);
+```
+The difficulty of each block will be based on the difficulty of the block that came before it. Update the `static mineBlock` function:
+```
+static mineBlock(lastBlock, data) {
+ 	let hash, timestamp;
+	const lastHash = lastBlock.hash;
+	let { difficulty } = lastBlock;
+	let nonce = 0;
+
+ 	do {
+		nonce++;
+		timestamp = Date.now();
+		difficulty = Block.adjustDifficulty(lastBlock, timestamp);
+		hash = Block.hash(timestamp, lastHash, data, nonce, difficulty);
+	} while (hash.substring(0, difficulty) !== '0'.repeat(difficulty));
+
+	return new this(timestamp, lastHash, hash, data, nonce, difficulty);
+  }
+```
+Add the `adjustDifficulty` function:
+```
+static adjustDifficulty(lastBlock, currentTime) {
+	let { difficulty } = lastBlock;
+	difficulty = lastBlock.timestamp + MINE_RATE > currentTime ?
+  difficulty + 1 : difficulty - 1;
+  return difficulty;
+}
+```

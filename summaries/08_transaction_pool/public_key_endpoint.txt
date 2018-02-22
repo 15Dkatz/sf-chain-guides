@@ -1,0 +1,7 @@
+Make a new get request, under the endpoint, `public-key` to expose the address of an instance:
+```
+app.get('/public-key', (req, res) => {
+  res.json({ publicKey: wallet.publicKey });
+});
+```
+

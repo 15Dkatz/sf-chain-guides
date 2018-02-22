@@ -1,0 +1,28 @@
+Install the Websocket module: `ws`. This will allow us to create real-time connections between multiple users of the blockchain:
+
+$ npm i ws --save
+Create a file called p2p-server.js (peer-to-peer) to write the `P2pServer` class. Right now the `P2pServer` class will open a websocket server, waiting for connections.
+```
+const Websocket = require('ws');
+const P2P_PORT = process.env.P2P_PORT || 5001;
+const peers = process.env.PEERS ? process.env.PEERS.split(',') : [];
+
+class P2pServer {
+  constructor(blockchain) {
+    this.blockchain = blockchain;
+    this.sockets = [];
+  }
+
+  listen() {
+    const server = new Websocket.Server({ port: P2P_PORT });
+    server.on('connection', socket => this.connectSocket(socket));
+  }
+
+  connectSocket(socket) {
+    this.sockets.push(socket);
+    console.log('Socket connected');
+  }
+}
+
+module.exports = P2pServer;
+```

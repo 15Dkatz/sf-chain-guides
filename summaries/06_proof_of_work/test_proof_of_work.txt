@@ -1,0 +1,26 @@
+Test the proof-of-work system.
+
+First make a config.js file at the root of the project so that the `DIFFICULTY` constant can be shared. Cut and paste the `DIFFICULTY` constant from block.js:
+Create config.js:
+```
+// cut and paste from block.js
+const DIFFICULTY = 4;
+module.exports = { DIFFICULTY };
+```
+In block.js, require the `DIFFICULTY` constant:
+```
+// at the top
+const { DIFFICULTY } = require('../config');
+```
+
+Then in block.test.js, add new unit tests:
+```
+// Next to the other requirements
+const { DIFFICULTY } = require('../config');
+...
+it('generates a hash that matches the difficulty', () => {
+	expect(block.hash.substring(0, DIFFICULTY)).toEqual('0'.repeat(DIFFICULTY));
+});
+```
+$ npm run test
+

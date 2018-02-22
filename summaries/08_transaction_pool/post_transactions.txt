@@ -1,0 +1,20 @@
+Create the equivalent method that actually adds new transactions to the transaction pool, in app/index.js:
+```
+app.post('/transact', (req, res) => {
+  const { recipient, amount } = req.body;
+  const transaction = wallet.createTransaction(recipient, amount, tp);
+  res.redirect('/transactions');
+});
+```
+
+$ npm run dev
+
+- Test a POST request in postman, with raw application/json set as the Body data. Use some json similar to this for the data:
+```
+{
+	"recipient": "foo-4dr3ss",
+	"amount": 50
+}
+```
+
+- Hit the endpoint a couple times

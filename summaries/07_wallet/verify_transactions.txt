@@ -1,0 +1,20 @@
+Now that transactions generate signatures based upon their outputs and their private keys, provide a way to verify the authenticity of those signatures. Within Chain Util, we’ll provide a new static method called verifySignature. In chain-util.js:
+
+
+```
+static verifySignature(publicKey, signature, dataHash) {
+	return ec.keyFromPublic(publicKey, 'hex').verify(dataHash, signature);
+}
+```
+
+Utilize this method within the transaction class to will the entire transaction. Make a static function called verifyTransaction. Go to transaction.js:
+```
+static verifyTransaction(transaction) {
+	return ChainUtil.verifySignature(
+		transaction.input.address,
+    transaction.input.signature,
+    ChainUtil.hash(transaction.outputs)
+  );
+}
+```
+

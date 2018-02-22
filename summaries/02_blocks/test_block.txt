@@ -1,0 +1,37 @@
+To enforce code consistency as the project develops, add a true testing environment. Install Jest as development dependency, a test runner for JavaScript:
+$ npm i jest --save-dev
+
+Jest finds files with a `test.js` extension. Create a testing file for the block class:
+Create block.test.js
+
+The tests in this file will assert that the block attributes are created properly. In block.test.js:
+```
+const Block = require('./block');
+
+describe('Block', () => {
+  let data, lastBlock, block;
+
+  beforeEach(() => {
+    data = 'bar';
+    lastBlock = Block.genesis();
+    block = Block.mineBlock(lastBlock, data);
+  });
+	
+  it('sets the `data` to match the input', () => {
+    expect(block.data).toEqual(data);
+  });
+	
+  it('sets the `lastHash` to match the hash of the last block', () => {
+    expect(block.lastHash).toEqual(lastBlock.hash);
+  });
+});
+
+```
+Add the `test` script. In the “scripts” section of package.json:
+```
+"test": "jest --watchAll",
+```
+$ `npm run test`
+
+If all goes well, you should see two green check marks.
+

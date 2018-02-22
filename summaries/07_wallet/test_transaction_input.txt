@@ -1,0 +1,8 @@
+Add a test to make sure that this input object was created along with our transaction. In transaction.test.js:
+```
+it('inputs the balance of the wallet', () => {
+   expect(transaction.input.amount).toEqual(wallet.balance);
+});
+```
+$ npm run test
+

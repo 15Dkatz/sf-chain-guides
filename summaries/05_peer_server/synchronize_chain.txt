@@ -1,0 +1,49 @@
+Use the received chain to synchronize chains across all instances with the `replaceChain` function. In the `P2pServer` class, in the `messageHandler` function:
+```
+messageHandler(socket) {
+	socket.on('message', message => {
+    const data = JSON.parse(message);
+    this.blockchain.replaceChain(data);
+  });
+});
+```
+Add a syncChains function to `P2pServer` class. Also cut the existing `socket.send(JSON.stringify(this.blockchain.chain));` code into a helper method called `sendChain`. Then fix the `connectSocket` to use the helper function:
+```
+sendChain(socket) {
+	socket.send(JSON.stringify(this.blockchain.chain));
+}
+
+connectSocket(socket) {
+  …
+  this.sendChain(socket);
+}
+
+syncChains() {
+  this.sockets.forEach(socket => {
+    this.sockets.forEach(socket => this.sendChain(socket));
+  });
+}
+```
+
+Within app/index.js, call syncChains() within the `.post(‘/mine’)` method:
+app.post(‘/mine’, (req, res) => {
+	p2pServer.syncChains();
+});
+
+Confirm the chain synchronization. Kill all the running instances on the command line. Fire up one instance with
+$ npm run dev
+
+Grow this blockchain a little. Open Postman, and fire two post requests to the mine endpoint. The endpoint is `localhost:3001/mine`, and the Raw→ Body → Type → application/json:
+```{ “data”: “foo” }```
+Send. Send.
+
+Run a second instance in a second command line tab:
+$ HTTP_PORT=3002 P2P_PORT=5002 PEERS=ws://localhost:5001 npm run dev
+
+Hit `localhost:3002/blocks`. Notice the synchronization.
+
+Check that the post method also synchronization. Add a new block, with `localhost:3001/mine`:
+Hit localhost:3001/mine
+
+Now `localhost:3002/blocks` and `localhost:3002/blocks` should return the same chain.
+
