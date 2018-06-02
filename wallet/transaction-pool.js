@@ -1,4 +1,4 @@
-const Transaction = require('../wallet/transaction');
+const Transaction = require('./transaction');
 
 class TransactionPool {
   constructor() {
